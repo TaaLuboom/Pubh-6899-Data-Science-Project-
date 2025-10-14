@@ -1,0 +1,110 @@
+---
+title: ACE CLINICAL TRIAL
+author:
+  - name: Luboom Taa
+title-block-banner: true
+caption-icon: false
+fig-cap-location: top
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: Contents
+    code-line-numbers: true
+    code-copy: true
+    embed-resources: true
+    theme: sandstone
+---
+## Overview
+
+The Angiotensin Converting Enzyme Inhibition, ACE(I), on Diabetic Nephropathy Trial was a prospective, double blinded, randomized, controlled clinical trial comparing the effects of captopril, an ACE inhibitor, against placebo in slowing the progression of renal disease in people with insulin dependent diabetes mellitus (IDDM).
+
+Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 351 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course. 
+
+The original SAS data set has been modified for purpose of this assignment.
+
+Serum creatinine is a measure of renal function with higher values indicating poorer kidney function. The use of captopril was intended to reduce the likelihood of doubling of serum creatinine during the study, indicating less progression of renal disease.
+
+### Import Libraries
+
+Below we import the necessary libraries for data manipulation, visualization, and statistical analysis.
+
+```{r}
+#| message: false
+#| warning: false
+library(readr)
+library(psych)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+library(ggstatsplot)
+library(vcd)
+library(epitools)
+library(lmtest)
+```
+### Set working directory
+
+```{r}
+setwd(getwd())
+```
+
+## Importing the data
+
+```{r}
+#| message: false
+#| warning: false
+dfr <- readr::read_csv("Ace.csv")
+```
+
+## Data Sanity Check
+
+We note that our dataset  has $350$ Observations and $9$ Variables.
+
+```{r}
+dim(dfr)
+```
+
+We also note that we don't have any missing data.
+
+```{r}
+# Proportion of missing data
+sum(is.na(dfr)) / (301 * 6)
+```
+
+Let us take a look at the structure of our dataset.
+```{r}
+str(dfr)
+```
+
+The properties of the $9$ variables are tabled below
+
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+| Variable                | Description                                | Properties                                                                              |
++=========================+============================================+=========================================================================================+
+  | $\texttt{AGE}$          | Age of participant                         | years                                                                                   |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{SEX}$          | Binary Gender                       | “MALE or “FEMALE”                                                                                   |
+ +-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{BGIRA}$          | Race                       | "1" = "White" "3" = "Black" and "2" "4" or "5" = "Other"                                                                                   | 
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{SMOKER}$     | Smoking status                       | “YES” or “NO”                                                                                    |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{BPCAT}$   | Blood Pressure Category at baseline visit    | 1 = "Normal" 2 = "Borderline" 3 = "Hypertensive"                                                                                   |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{TXGRP}$    | Treatment group                            | “Captopril” or “Placebo”                                                                |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{BASESCR}$   | Baseline serum creatinine                  | mg/dL                                                                                   |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{BASEMAP}$       | Mean arterial pressure at the baseline visit         | mm Hg                                                                                  |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+    | $\texttt{DOUBLE}$         | Doubled Serum creatinine over course of the study | “YES” or “NO”                                              |
++-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+
+: Table 1: Description of variables in the ACE clinical trial dataset.
+
+  
+ 
+
+ 
+
