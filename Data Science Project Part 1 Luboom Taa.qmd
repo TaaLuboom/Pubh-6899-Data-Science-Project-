@@ -20,7 +20,7 @@ format:
 
 The Angiotensin Converting Enzyme Inhibition, ACE(I), on Diabetic Nephropathy Trial was a prospective, double blinded, randomized, controlled clinical trial comparing the effects of captopril, an ACE inhibitor, against placebo in slowing the progression of renal disease in people with insulin dependent diabetes mellitus (IDDM).
 
-Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 351 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course at George Washington University.
+Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 350 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course at George Washington University.
 
 The original SAS data set has been modified for purpose of this assignment.
 
@@ -324,3 +324,4 @@ vcd::mosaic(
   labeling_args = list(gp_labels = gpar(fontsize = 12)
 )) 
 ```
+
