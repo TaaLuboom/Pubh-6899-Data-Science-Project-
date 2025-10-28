@@ -15,17 +15,33 @@ format:
     embed-resources: true
     theme: sandstone
 ---
+
 ## Overview
 
 The Angiotensin Converting Enzyme Inhibition, ACE(I), on Diabetic Nephropathy Trial was a prospective, double blinded, randomized, controlled clinical trial comparing the effects of captopril, an ACE inhibitor, against placebo in slowing the progression of renal disease in people with insulin dependent diabetes mellitus (IDDM).
 
-Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 351 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course. 
+Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 351 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course at George Washington University.
 
 The original SAS data set has been modified for purpose of this assignment.
 
 Serum creatinine is a measure of renal function with higher values indicating poorer kidney function. The use of captopril was intended to reduce the likelihood of doubling of serum creatinine during the study, indicating less progression of renal disease.
 
-### Import Libraries
+## Methods
+
+### Data Importing and Inspection
+
+The dataset used for this analysis was derived from the Angiotensin Converting Enzyme Inhibition (ACE[I]) trial, a double-blind, randomized controlled trial assessing the effect of captopril on renal disease progression in insulin-dependent diabetes mellitus (IDDM) patients
+The analysis dataset ($ACE.csv$) containing 350 observations and multiple demographic and clinical variables was imported into the statistical software  R version 4.5.1 using standard library import procedures. Data inspection was conducted to confirm successful importation, check for missing values, ensure correct variable types (numeric or character), and verify coding consistency. Formats(eg.'TXGRP' for treatment group) were applied to variables enhance interpretability.
+ 
+### Summary statistics and Research Questions
+
+The primary research question examined whether treatment with captopril reduced the risk of doubling of serum creatinine compared to placebo. Secondary analyses explored (1) whether baseline mean arterial pressure differed between smokers and non-smokers, and (2) whether a correlation existed between baseline serum creatinine and age. Summary statistics were calculated for all variables using descriptive procedures, including means and standard deviations for continuous variables (e.g., BASEMAP, BASESCR, AGE) and frequency distributions for categorical variables (e.g., SEX, TXGRP, SMOKER). These summaries provided an overview of baseline characteristics and facilitated assessment of data balance between treatment groups.
+
+### Data Visualization and Inferential Analyses
+
+Data visualization techniques were employed to describe and illustrate variable distributions and relationships. Histograms and boxplots depicted the distribution of continuous variables, while bar charts summarized categorical variable frequencies. For the primary outcome, a  logistic regression was applied to compare the proportion of patients with doubled serum creatinine between the captopril and placebo groups. The secondary question on mean arterial pressure differences between smokers and non-smokers was evaluated using an independent samples t-test(if assumption met). The correlation between baseline serum creatinine and age was assessed using Pearson’s correlation coefficient. Statistical significance was defined at α = 0.05, and results were reported with corresponding confidence intervals.
+
+## Import Libraries
 
 Below we import the necessary libraries for data manipulation, visualization, and statistical analysis.
 
@@ -43,13 +59,14 @@ library(vcd)
 library(epitools)
 library(lmtest)
 ```
+
 ### Set working directory
 
 ```{r}
 setwd(getwd())
 ```
 
-## Importing the data
+### Importing the data
 
 ```{r}
 #| message: false
@@ -59,7 +76,7 @@ dfr <- readr::read_csv("Ace.csv")
 
 ## Data Sanity Check
 
-We note that our dataset  has $350$ Observations and $9$ Variables.
+We note that our dataset has $350$ Observations and $9$ Variables.
 
 ```{r}
 dim(dfr)
@@ -73,38 +90,237 @@ sum(is.na(dfr)) / (301 * 6)
 ```
 
 Let us take a look at the structure of our dataset.
+
 ```{r}
 str(dfr)
 ```
 
 The properties of the $9$ variables are tabled below
 
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-| Variable                | Description                                | Properties                                                                              |
-+=========================+============================================+=========================================================================================+
-  | $\texttt{AGE}$          | Age of participant                         | years                                                                                   |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{SEX}$          | Binary Gender                       | “MALE or “FEMALE”                                                                                   |
- +-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{BGIRA}$          | Race                       | "1" = "White" "3" = "Black" and "2" "4" or "5" = "Other"                                                                                   | 
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{SMOKER}$     | Smoking status                       | “YES” or “NO”                                                                                    |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{BPCAT}$   | Blood Pressure Category at baseline visit    | 1 = "Normal" 2 = "Borderline" 3 = "Hypertensive"                                                                                   |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{TXGRP}$    | Treatment group                            | “Captopril” or “Placebo”                                                                |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{BASESCR}$   | Baseline serum creatinine                  | mg/dL                                                                                   |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{BASEMAP}$       | Mean arterial pressure at the baseline visit         | mm Hg                                                                                  |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
-    | $\texttt{DOUBLE}$         | Doubled Serum creatinine over course of the study | “YES” or “NO”                                              |
-+-------------------------+--------------------------------------------+-----------------------------------------------------------------------------------------+
+| Variable | Description | Properties |
+|:-----------------------|:----------------------:|-----------------------:|
+| $\texttt{AGE}$ | Age of participant | years |
+| $\texttt{BGIRA}$ | Race | "1" = White "2" = Black and "3" "4" or "5" = Other |
+| $\texttt{SMOKER}$ | Smoking status | “YES” or “NO” |
+| $\texttt{SEX}$ | SEX | “MALE” or “FEMALE” |
+| $\texttt{BPCAT}$ | Blood Pressure category at baseline visit | 1 = Normal 2 = Borderline 3 = Hypertensive |
+| $\texttt{TXGRP}$ | Treatment group |1 = Captopril or 2 = Placebo” |
+| $\texttt{BASESCR}$ | Baseline serum creatinine | mg/dL |
+| $\texttt{BASEMAP}$ | Mean arterial pressure at the baseline visit | mm Hg |
+| $\texttt{DOUBLE}$ | Doubled Serum creatinine over course of the study | “YES” or “NO” |
 
 : Table 1: Description of variables in the ACE clinical trial dataset.
 
-  
- 
+## Descriptive Statistics
 
- 
+### Summary Statistics for Continuous Variables
 
+The mean, median, and standard deviation for the measures of $\texttt{AGE}$, mean arterial pressure at the baseline ($\texttt{BASEMAP}$), and serum creatinine at the baseline visit ($\texttt{BASESCR}$) overall and stratified by treatment group are summarized below.
+
+```{r}
+# Setting labels for the treatment  variable levels
+dfr$TXGRP <- factor(
+  dfr$TXGRP,
+  levels = c(1, 2), # The order matters
+  labels = c("Captopril", "Placebo") # As per the encoding when the data was captured
+)
+```
+
+```{r}
+# Summary statistics of age, BASEMAP and BASESCR by levels of treatment group 
+psych::describeBy(
+  dfr$AGE,
+  group = dfr$TXGRP
+)
+
+```
+```{r}
+psych::describeBy(
+  dfr$BASEMAP,
+  group = dfr$TXGRP
+)
+```
+```{r}
+psych::describeBy(
+  dfr$BASESCR,
+  group = dfr$TXGRP
+)
+```
+### Summary Statistics for Categorical Variables
+The frequency and proportion for the categorical variables $\texttt{SEX}$, $\texttt{SMOKER}$, $\texttt{BPCAT}$, and $\texttt{BGIRA}$ stratified by treatment group are summarized below.
+```{r}
+xtabs(
+  ~ SEX + TXGRP,
+  data = dfr
+)
+```
+
+```{r}
+xtabs(
+  ~ SMOKER + TXGRP,
+  data = dfr
+)
+```
+```{r}
+# Setting labels for the blood pressure variable levels
+dfr$BPCAT <- factor(
+  dfr$BPCAT,
+  levels = c(1, 2, 3), # The order matters
+  labels = c("Normal", "Borderline", "Hypertensive") # As per the encoding when the data was captured
+)
+```
+
+```{r}
+xtabs(
+  ~ BPCAT + TXGRP,
+  data = dfr
+)
+```
+
+```{r}
+# Setting labels for the race variable levels
+dfr$BGIRA <- factor(
+  dfr$BGIRA,
+  levels = c(1, 2, 3, 4, 5), # The order matters
+  labels = c("White", "Black", "Other","Other","Other") # As per the encoding when the data was captured
+)
+```
+```{r}
+xtabs(
+  ~ BGIRA + TXGRP,
+  data = dfr
+)
+```
+## Data Visualization
+
+### Data Visualization for our continous Variables
+Below are the boxplots and histograms for the continuous variables $\texttt{AGE}$, $\texttt{BASEMAP}$, and $\texttt{BASESCR}$ stratified by treatment group.
+
+The $\texttt{age}$ and $\texttt{TXGRP}$ are considered in @fig-AGETXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-AGETXGRP
+#| fig-cap: "Age distribution by treatment group"
+AGE_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = AGE
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of AGE by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("Treatment Groups") +
+  ggplot2::ylab("Age") +
+  ggthemes::theme_clean());
+plotly::ggplotly(AGE_TXGRP)
+```
+
+The $\texttt{BASEMAP}$ and $\texttt{TXGRP}$ are considered in @fig-BASEMAPTXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASEMAPTXGRP
+#| fig-cap-location: top
+BASEMAP_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = BASEMAP
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of BASEMAP by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("TXGRP") +
+  ggplot2::ylab("BASEMAP") +
+  ggthemes::theme_clean());
+plotly::ggplotly(BASEMAP_TXGRP)
+```
+The $\texttt{BASESCR}$ and $\texttt{TXGRP}$ are considered in @fig-BASESCRTXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASESCRTXGRP
+#| fig-cap-location: top
+BASESCR_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = BASESCR
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of BASESCR by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("TXGRP") +
+  ggplot2::ylab("BASESCR") +
+  ggthemes::theme_clean());
+plotly::ggplotly(BASESCR_TXGRP)
+```
+
+A scatterplot that illustrates the relationship between $\texttt{AGE}$ and $\texttt{BASEMAP}$ is shown in @fig-BASEMAPAGE.
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASEMAPAGE
+#| fig-cap: "AGE vs. BASEMAP"
+#| fig-cap-location: top
+ggstatsplot::ggscatterstats(
+  data = dfr,
+  x = AGE,
+  y = BASEMAP,
+  bf.message = FALSE
+)
+```
+### Data Visualization for our Categorical Variables
+
+The mosaic plot on @fig-SEXTXGRP illustrates the relationship between $\texttt{TXGRP}$ and $\texttt{SEX}$ is shown.
+```{r}
+#| label: fig-SEXTXGRP
+#| fig-cap: "Sex vs. TXGRP"
+#| fig-cap-location: top
+vcd::mosaic(
+  ~ SEX + TXGRP,
+  data = dfr,
+  highlighting = "TXGRP",
+  highlighting_fill = c("deepskyblue", "yellow"),
+  main = "Mosaic plot of SEX and TXGRP",
+  labeling_args = list(gp_labels = gpar(fontsize = 12)
+)) 
+```
