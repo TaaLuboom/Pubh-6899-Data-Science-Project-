@@ -1,0 +1,455 @@
+---
+title: ACE CLINICAL TRIAL
+author:
+  - name: Luboom Taa
+title-block-banner: true
+caption-icon: false
+fig-cap-location: top
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: Contents
+    code-line-numbers: true
+    code-copy: true
+    embed-resources: true
+    theme: sandstone
+---
+## Project Description
+The following research project is a demonstration of the use of Artificial Inteligence as an assistant in literature search, data management, data analysis, and report writing in epidemiologic research. **Literature Review** was conducted using $Perplexity$ and **Discussion Section** was initially generated using $ClaudeAI$ and edited by the writer. **Data management** and  **Data analysis** were done using Github Copilot in R studio. The  project utilizes the **Angiotensin Converting Enzyme Inhibition (ACE[I]) clinical trial dataset** to explore the effect of captopril on diabetic nephropathy.
+
+## Dataset Overview
+
+The Angiotensin Converting Enzyme Inhibition, ACE(I), on Diabetic Nephropathy Trial was a prospective, double blinded, randomized, controlled clinical trial comparing the effects of captopril, an ACE inhibitor, against placebo in slowing the progression of renal disease in people with insulin dependent diabetes mellitus (IDDM).
+
+Four hundred nine (409) individuals participated in the original study at 30 centers between December 1987 and October 1990 and the analysis data set for this assignment includes data from 350 participants. The primary end point of the trial was doubling of the baseline serum creatinine concentration. The main results of the ACE(I) clinical trial were published in the article ‘The Effect of Angiotensin-Converting-Enzyme Inhibition on Diabetic Nephropathy’ (NEJM. 329: 1456-1462. November 1993). Edmund Lewis, M.D. and Raymond P. Bain, Ph.D., PI and co-PI respectively, of the ACE(I) clinical trial released the original SAS data sets of the trial for purposes of data management and data analysis for Advanced Epidemiologic Data Analysis (PUBH_6260) course at George Washington University.
+
+The original SAS data set has been modified for purpose of this assignment.
+
+Serum creatinine is a measure of renal function with higher values indicating poorer kidney function. The use of captopril was intended to reduce the likelihood of doubling of serum creatinine during the study, indicating less progression of renal disease.
+
+## Literature Review
+Diabetic nephropathy remains the principal cause of end-stage renal disease worldwide. Activation of the renin-angiotensin-aldosterone system (RAAS) contributes critically to its pathogenesis, making ACE inhibitors (ACE[I]) foundational in its management [1,2].Lewis and colleagues conducted a landmark double-blind randomized trial of captopril versus placebo in 409 patients with type 1 diabetes, proteinuria, and preserved renal function. Captopril significantly reduced the risk of doubling serum creatinine by 48% (P=0.007), and this renoprotective effect was most pronounced in those with higher baseline serum creatinine [1,3].Additonally, the composite endpoint of death, dialysis, or transplantation was reduced by 50% compared to placebo [1].ACE inhibitors lower intraglomerular pressure by preferential dilation of the efferent arteriole—reducing glomerular hyperfiltration, which is a known driver of nephron loss in diabetes [4,5]. These effects persist beyond blood pressure lowering, implicating additional pathways such as reduction in proteinuria, inhibition of pro-fibrotic and pro-inflammatory mediators, and restoration of glomerular basement membrane selectivity [6,7,8].Several studies and meta-analyses confirm that proteinuria regression with ACE[I] correlates with slower progression of nephropathy and improved cardiovascular outcomes. ACE inhibitors reduce protein excretion more than other antihypertensives for the same blood pressure reduction [6,9].Meta-analyses show ACE inhibitors reduce the risk of progressing from microalbuminuria to overt nephropathy significantly, and even promote regression to normoalbuminuria in type 1 diabetes, including in normotensive individuals [10,11]. For example, low-dose ramipril also slowed albuminuria progression and led to greater rates of regression to normal excretion than placebo [12].Outcomes are similar for type 2 diabetes. ACE inhibitors and ARBs are equivalent in reducing renal endpoints, though ACE inhibitors show more robust all-cause mortality benefits in meta-analyses, whereas ARBs do not [13,14]. Thus, ACE[I] are generally favored unless there is  intolerance [15,16].The benefit of ACE[I] is not restricted to hypertensive patients. In type 1 diabetes, benefit in delaying nephropathy progression is present even in normotensive individuals [11,12,17].Smoking worsens the progression of diabetic nephropathy and is associated with higher mean arterial pressure and higher albuminuria [18,19]. The relationship between baseline serum creatinine and age is complex; older age is associated with higher risk for nephropathy and decreased renal reserve, though findings must be interpreted in the context of diabetes duration and comorbidities [20,21].ACE inhibitors are generally well-tolerated. Main adverse effects include cough, and rarely, angioedema. Hyperkalemia risk increases in advanced CKD or with potassium-sparing diuretics, requiring monitoring [15].ACE[I] are recommended as first-line therapy for diabetic nephropathy with albuminuria by major societies [15,22]. ARBs are an alternative for those who cannot tolerate ACE[I] [22]. 
+
+## Methods
+
+### Data Importing and Inspection
+
+The dataset used for this analysis was derived from the Angiotensin Converting Enzyme Inhibition (ACE[I]) trial, a double-blind, randomized controlled trial assessing the effect of captopril on renal disease progression in insulin-dependent diabetes mellitus (IDDM) patients
+The analysis dataset ($ACE.csv$) containing 350 observations and multiple demographic and clinical variables was imported into the statistical software  R version 4.5.1 using standard library import procedures. Data inspection was conducted to confirm successful importation, check for missing values, ensure correct variable types (numeric or character), and verify coding consistency. Formats(eg.'TXGRP' for treatment group) were applied to variables to enhance interpretability.
+ 
+### Summary statistics and Research Questions
+
+The primary research question examined whether treatment with captopril reduced the risk of doubling of serum creatinine compared to placebo. Secondary analyses explored (1) whether baseline mean arterial pressure differed between smokers and non-smokers, and (2) whether a correlation existed between baseline serum creatinine and age. Summary statistics were calculated for all variables using descriptive procedures, including means and standard deviations for continuous variables (e.g., BASEMAP, BASESCR, AGE) and frequency distributions for categorical variables (e.g., SEX, TXGRP, SMOKER). These summaries provided an overview of baseline characteristics and facilitated assessment of data balance between treatment groups.
+
+### Data Visualization and Inferential Analyses
+
+Data visualization techniques were employed to describe and illustrate variable distributions and relationships. Histograms and boxplots depicted the distribution of continuous variables, while bar charts summarized categorical variable frequencies. For the primary outcome, a  logistic regression was applied to compare the proportion of patients with doubled serum creatinine between the captopril and placebo groups. The secondary question on mean arterial pressure differences between smokers and non-smokers was evaluated using **Mann-Whitney-U test**. The correlation between baseline serum creatinine and age was assessed using **Spearman's rank correlation coefficient**. Statistical significance was defined at α = 0.05, and results were reported with corresponding confidence intervals.
+
+::: {.callout-tip icon="false" collapse="true"} 
+## Import Libraries
+
+Below we import the necessary libraries for data manipulation, visualization, and statistical analysis.
+
+```{r}
+#| message: false
+#| warning: false
+library(readr)
+library(psych)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+library(ggstatsplot)
+library(vcd)
+library(epitools)
+library(lmtest)
+```
+ 
+### Set working directory
+
+```{r}
+setwd(getwd())
+```
+### Importing the data
+
+```{r}
+#| message: false
+#| warning: false
+dfr <- readr::read_csv("Ace.csv")
+```
+ 
+## Data Sanity Check
+
+We note that our dataset has $350$ Observations and $9$ Variables.
+
+```{r}
+dim(dfr)
+```
+
+We also note that we don't have any missing data.
+
+```{r}
+# Proportion of missing data
+sum(is.na(dfr)) / (301 * 6)
+```
+
+Let us take a look at the structure of our dataset.
+
+```{r}
+str(dfr)
+```
+:::
+The properties of the $ACE.csv$ dataset variables are tabled below
+
+| Variable | Description | Properties |
+|:-----------------------|:----------------------:|-----------------------:|
+| $\texttt{AGE}$ | Age of participant | years |
+| $\texttt{BGIRA}$ | Race | "1" = White "2" = Black and "3" "4" or "5" = Other |
+| $\texttt{SMOKER}$ | Smoking status | “YES” or “NO” |
+| $\texttt{SEX}$ | SEX | “MALE” or “FEMALE” |
+| $\texttt{BPCAT}$ | Blood Pressure category at baseline visit | 1 = Normal 2 = Borderline 3 = Hypertensive |
+| $\texttt{TXGRP}$ | Treatment group |1 = Captopril or 2 = Placebo” |
+| $\texttt{BASESCR}$ | Baseline serum creatinine | mg/dL |
+| $\texttt{BASEMAP}$ | Mean arterial pressure at the baseline visit | mm Hg |
+| $\texttt{DOUBLE}$ | Doubled Serum creatinine over course of the study | “YES” or “NO” |
+
+: Table 1: Description of variables in the ACE clinical trial dataset.
+## Results
+
+### Descriptive Statistics for Continuous Variables
+
+The mean, median, and standard deviation for the measures of $\texttt{AGE}$, mean arterial pressure at the baseline ($\texttt{BASEMAP}$), and serum creatinine at the baseline visit ($\texttt{BASESCR}$) overall and stratified by treatment group are summarized below.
+
+
+```{r}
+# Setting labels for the treatment  variable levels
+dfr$TXGRP <- factor(
+  dfr$TXGRP,
+  levels = c(1, 2), # The order matters
+  labels = c("Captopril", "Placebo") # As per the encoding when the data was captured
+)
+```
+
+```{r}
+# Summary statistics of age, BASEMAP and BASESCR by levels of treatment group 
+psych::describeBy(
+  dfr$AGE,
+  group = dfr$TXGRP
+)
+
+```
+
+```{r}
+psych::describeBy(
+  dfr$BASEMAP,
+  group = dfr$TXGRP
+)
+```
+```{r}
+psych::describeBy(
+  dfr$BASESCR,
+  group = dfr$TXGRP
+)
+```
+### Descriptive Statistics for Categorical Variables
+The frequency and proportion for the categorical variables $\texttt{SEX}$, $\texttt{SMOKER}$, $\texttt{BPCAT}$, and $\texttt{BGIRA}$ stratified by treatment group are summarized below.
+```{r}
+xtabs(
+  ~ SEX + TXGRP,
+  data = dfr
+)
+```
+
+```{r}
+xtabs(
+  ~ SMOKER + TXGRP,
+  data = dfr
+)
+```
+```{r}
+# Setting labels for the blood pressure variable levels
+dfr$BPCAT <- factor(
+  dfr$BPCAT,
+  levels = c(1, 2, 3), # The order matters
+  labels = c("Normal", "Borderline", "Hypertensive") # As per the encoding when the data was captured
+)
+```
+
+```{r}
+xtabs(
+  ~ BPCAT + TXGRP,
+  data = dfr
+)
+```
+
+```{r}
+# Setting labels for the race variable levels
+dfr$BGIRA <- factor(
+  dfr$BGIRA,
+  levels = c(1, 2, 3, 4, 5), # The order matters
+  labels = c("White", "Black", "Other","Other","Other") # As per the encoding when the data was captured
+)
+```
+```{r}
+xtabs(
+  ~ BGIRA + TXGRP,
+  data = dfr
+)
+```
+### Data Visualization for Continous Variables
+Below are the boxplots and histograms for the continuous variables $\texttt{AGE}$, $\texttt{BASEMAP}$, and $\texttt{BASESCR}$ stratified by treatment group.
+
+The $\texttt{age}$ and $\texttt{TXGRP}$ are considered in @fig-AGETXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-AGETXGRP
+#| fig-cap: "Age distribution by treatment group"
+AGE_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = AGE
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of AGE by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("Treatment Groups") +
+  ggplot2::ylab("Age") +
+  ggthemes::theme_clean());
+plotly::ggplotly(AGE_TXGRP)
+```
+
+The $\texttt{BASEMAP}$ and $\texttt{TXGRP}$ are considered in @fig-BASEMAPTXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASEMAPTXGRP
+#| fig-cap-location: top
+BASEMAP_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = BASEMAP
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of BASEMAP by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("TXGRP") +
+  ggplot2::ylab("BASEMAP") +
+  ggthemes::theme_clean());
+plotly::ggplotly(BASEMAP_TXGRP)
+```
+The $\texttt{BASESCR}$ and $\texttt{TXGRP}$ are considered in @fig-BASESCRTXGRP.
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASESCRTXGRP
+#| fig-cap-location: top
+BASESCR_TXGRP <- (dfr %>% ggplot2::ggplot(
+  aes(
+    x = TXGRP,
+    y = BASESCR
+  )
+) +
+  ggplot2::geom_boxplot(
+    aes(
+      fill = TXGRP
+    ),
+    show.legend = FALSE
+  ) +
+  ggplot2::labs(
+    title = "Distribution of BASESCR by Treatment Group",
+    subtitle = "Comparison between Treatment groups"
+  ) +
+  ggplot2::scale_fill_brewer(
+    palette = "Set1",
+    direction = -1
+  ) +
+  ggplot2::xlab("TXGRP") +
+  ggplot2::ylab("BASESCR") +
+  ggthemes::theme_clean());
+plotly::ggplotly(BASESCR_TXGRP)
+```
+
+A scatterplot that illustrates the relationship between $\texttt{AGE}$ and $\texttt{BASEMAP}$ is shown in @fig-BASEMAPAGE.
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-BASEMAPAGE
+#| fig-cap: "AGE vs. BASEMAP"
+#| fig-cap-location: top
+ggstatsplot::ggscatterstats(
+  data = dfr,
+  x = AGE,
+  y = BASEMAP,
+  bf.message = FALSE
+)
+```
+### Data Visualization for  Categorical Variables
+
+The mosaic plot on @fig-SEXTXGRP illustrates the relationship between $\texttt{TXGRP}$ and $\texttt{SEX}$ is shown.
+```{r}
+#| label: fig-SEXTXGRP
+#| fig-cap: "Sex vs. TXGRP"
+#| fig-cap-location: top
+vcd::mosaic(
+  ~ SEX + TXGRP,
+  data = dfr,
+  highlighting = "TXGRP",
+  highlighting_fill = c("deepskyblue", "yellow"),
+  main = "Mosaic plot of SEX and TXGRP",
+  labeling_args = list(gp_labels = gpar(fontsize = 12)
+)) 
+```
+## Inferential Statistics
+
+### Is there a difference in baseline mean arterial pressure ($\texttt{BASEMAP}$) between smokers and non-smokers? 
+
+Comparing a continuous variable between two groups can be conducted using a t test or a Mann-Whitney-U test. We use the latter non-parametric test if the assumptions for the use parametric tests are not met. Below we check the assumptions for the t test.
+```{r}
+# Checking for normality using Shapiro-Wilk test
+shapiro_test_smokers <- shapiro.test(dfr$BASEMAP[dfr$SMOKER == "YES"])
+shapiro_test_nonsmokers <- shapiro.test(dfr$BASEMAP[dfr$SMOKER == "NO"])
+shapiro_test_smokers
+shapiro_test_nonsmokers
+```
+The Shapiro-Wilk test indicates that the $\texttt{BASEMAP}$ variable is not normally distributed in both smokers (p < 0.001) and non-smokers (p < 0.001). Therefore, we will use the Mann-Whitney-U test to compare the baseline mean arterial pressure between smokers and non-smokers.
+```{r}
+# Mann-Whitney-U test
+wilcox_test <- wilcox.test(
+  BASEMAP ~ SMOKER,
+  data = dfr,
+  exact = FALSE
+)
+wilcox_test
+```
+The Mann-Whitney-U test indicates that there is no statistically significant difference in baseline mean arterial pressure between smokers and non-smokers (p = 0.6694)
+
+### Is there a correlation between baseline serum creatinine ($\texttt{BASESCR}$) and age ($\texttt{AGE}$)?
+
+To assess the correlation between two continuous variables, we can use Pearson's correlation coefficient if the variables are normally distributed. Below we check the normality assumption for both $\texttt{BASESCR}$ and $\texttt{AGE}$.
+```{r}
+# Checking for normality using Shapiro-Wilk test
+shapiro_test_basescr <- shapiro.test(dfr$BASESCR)
+shapiro_test_age <- shapiro.test(dfr$AGE)
+shapiro_test_basescr
+shapiro_test_age
+```
+The Shapiro-Wilk test indicates that both $\texttt{BASESCR}$ (p <0.001) and $\texttt{AGE}$ (p < 0.001) are not normally distributed. Therefore, we will use Spearman's rank correlation coefficient to assess the correlation between baseline serum creatinine and age.
+```{r}
+# Spearman's rank correlation coefficient
+spearman_corr <- cor.test(
+  dfr$BASESCR,
+  dfr$AGE,
+  method = "spearman"
+)
+spearman_corr
+```
+
+
+### Does treatment with captopril reduce the risk of doubling of serum creatinine compared to placebo?
+
+To answer this question, we will perform a logistic regression analysis with $\texttt{DOUBLE}$ as the outcome variable and $\texttt{TXGRP}$ as the predictor variable.
+```{r}
+# Setting labels for the DOUBLE variable levels
+dfr$DOUBLE <- factor(
+  dfr$DOUBLE,
+  levels = c("NO", "YES"), # The order matters
+  labels = c(0, 1) # As per the encoding when the data was captured
+)
+```
+
+```{r}
+intercept_model <- glm(
+  DOUBLE ~ 1, # Only the intercept
+  data = dfr,
+  family = binomial(link = "logit")
+)
+
+full_model <- glm(
+  DOUBLE ~ BGIRA + BASEMAP + BPCAT + SEX + AGE + TXGRP + SMOKER + BASESCR, # All the explanatory variables
+  data = dfr,
+  family = binomial(link = "logit"))
+```
+Now we use the 'lrest' function to compare the two models.
+
+```{r}
+lmtest::lrtest(
+  intercept_model, # Nested model
+  full_model # Full model
+)
+```
+The likelihood ratio test indicates that the full model is significantly better than the intercept-only model (p < 0.001), suggesting that at least one of the predictors in the full model is significantly associated with the outcome variable $\texttt{DOUBLE}$. 
+Next, we will examine the coefficients of the full model to determine the effect of $\texttt{TXGRP}$ on the odds of doubling serum creatinine.
+```{r}
+summary(full_model)
+```
+The coefficient for $\texttt{TXGRPPlacebo}$ is positive and statistically significant ( p = 0.002), indicating that patients in the placebo group have higher odds of doubling serum creatinine compared to those in the captopril group. The odds ratio can be calculated as exp(0.8475) = 2.33, suggesting that patients in the placebo group have 2.33 times the odds of doubling serum creatinine compared to those in the captopril group, after adjusting for other covariates in the model.
+
+## Discussion
+
+Across treatment groups, the distribution of categorical variables—including **sex, smoking status, race (BGIRA), and baseline blood pressure category (BPCAT)**—was generally well balanced. Sex distribution was comparable, with **82** females and **91** males in the captopril group and **76** females and **101** males in the placebo group. Smoking status showed a similar pattern, with the majority of participants being non-smokers in both treatment arms, though counts were unevenly displayed in the extracted table. Race distribution demonstrated that most participants identified as White in both groups (**158** in captopril, **155** in placebo), with smaller proportions identifying as Black or Other race. These patterns suggest good baseline comparability, supporting the internal validity of subsequent treatment comparisons. 
+
+Continuous variables—including **age, baseline mean arterial pressure (BASEMAP), and baseline serum creatinine (BASESCR)**—also showed similar distributions between treatment groups. Participants in the captopril and placebo groups had comparable ages, with mean ages of **34.96 ± 7.31** years and **33.95 ± 7.57** years, respectively . Baseline mean arterial pressure was likewise similar: **102.17 ± 11.78 mmHg** in the captopril group and **103.72 ± 12.56 mmHg** in the placebo group, with comparable medians and ranges suggesting similar central tendency and variability across treatment arms . Baseline serum creatinine levels showed minimal differences between groups, with means of **1.27 ± 0.42 mg/dL** (captopril) and **1.26 ± 0.41 mg/dL** (placebo) and overlapping ranges, indicating balanced renal function at entry into the trial.
+
+The study examined the impact of smoking on hemodynamics using the Mann-Whitney U test. While the student's specific output for the significance of the MAP difference was not fully visible, the literature suggests a complex relationship. Unlike non-diabetics, where smokers may sometimes exhibit lower blood pressure, diabetic smokers have been observed to have significantly higher ambulatory mean arterial pressure ($94±6.7$ mmHg vs. $90 ± 5.8$ mmHg) due to the sustained sympathetic stimulation caused by nicotine [23]. Furthermore, the analysis identified a statistically significant positive correlation between age and serum creatinine (Spearman's $\rho = 0.265$, $p < 0.001$). This finding aligns with established physiological models where aging is associated with a progressive decline in Glomerular Filtration Rate (GFR) and a subsequent rise in serum creatinine, even in the absence of overt disease[24].
+
+The logistic regression analysis aimed to determine whether Captopril treatment reduces the risk of the primary endpoint: the doubling of baseline serum creatinine. The results of this teaching dataset corroborate the landmark findings of Lewis et al.[1], who demonstrated that Captopril therapy resulted in a 48% reduction in the risk of doubling serum creatinine ($P = 0.007$) compared to placebo. This protection is attributed to the specific renal hemodynamic effects of Angiotensin-Converting Enzyme (ACE) inhibitors, which lower intraglomerular pressure more effectively than blood pressure control alone, thereby slowing the progression of diabetic nephropathy[1].
+
+## Conclusion
+
+The findings from this data science project replicate the core clinical evidence supporting the use of ACE inhibitors in diabetic nephropathy. The analysis confirms that Captopril offers significant renal protection, reducing the likelihood of severe renal impairment independent of its antihypertensive effects. Additionally, the positive correlation between age and serum creatinine underscores the importance of age-adjusted renal monitoring. These results are fully consistent with the pivotal trial by Lewis et al.[1], which established ACE inhibition as the standard of care for preserving renal function in patients with insulin-dependent diabetes mellitus.
+
+## References
+1. Lewis EJ, Hunsicker LG, Bain RP, Rohde RD. The effect of angiotensin-converting-enzyme inhibition on diabetic nephropathy. N Engl J Med. 1993;329(20):1456-62.
+2. Ritz E, Orth SR. Renal considerations in angiotensin converting enzyme inhibitor therapy: a statement for healthcare professionals from the Council on the Kidney in Cardiovascular Disease and the Council for High Blood Pressure Research of the American Heart Association. Circulation. 2001;104(16):1985-91.
+3. Pohl MA. Angiotensin-converting enzyme inhibition in type I diabetic renal disease: captopril in diabetic nephropathy. Cleve Clin J Med. 1994;61(1):38-45.
+4. Ahmad J, Siddiqui MA, Ahmad H. Effect of angiotensin converting enzyme inhibitor on glomerular filtration rate in normotensive patient with type 1 diabetes. J Ayub Med Coll Abbottabad. 2010;22(3):133-7.
+5. Tonneijck L, Muskiet MHA, Smits MM, et al. Glomerular hyperfiltration in diabetes: mechanisms, clinical significance, and treatment. J Am Soc Nephrol. 2017;28(4):1023-39.
+6. Management of proteinuria: blockade of the renin–angiotensin–aldosterone system. Aust Prescr. 2020;43(4):117-20.
+7. Schena FP, Gesualdo L. Pathogenetic mechanisms of diabetic nephropathy. J Am Soc Nephrol. 2005;16(3 Suppl 1):S30-3.
+8. Satirapoj B, Adler SG. Role of the renin angiotensin system in diabetic nephropathy. Front Biosci. 2011;3:290-303.
+9. de Zeeuw D, Remuzzi G, Parving HH, et al. Proteinuria, a target for renoprotection in patients with type 2 diabetic nephropathy: lessons from RENAAL. Kidney Int. 2004;65(6):2309-20.
+10. ACE Inhibitors in Diabetic Nephropathy Trialist Group. Should all patients with type 1 diabetes mellitus and microalbuminuria receive angiotensin-converting enzyme inhibitors? Ann Intern Med. 2001;134(5):370-9.
+11. Mathiesen ER, Hommel E, Hansen HP, et al. Randomised controlled trial of long term efficacy of captopril on preservation of kidney function in normotensive patients with insulin dependent diabetes and microalbuminuria. BMJ. 2001;319(7201):24-5.
+12. O'Hare P, Bilbous R, Mitchell T, et al. Low-dose ramipril reduces microalbuminuria in type 1 diabetic patients without hypertension: results of a randomized controlled trial. Diabetes Care. 2000;23(12):1823-9.
+13. Strippoli GF, Craig M, Deeks JJ, et al. Effects of angiotensin converting enzyme inhibitors and angiotensin II receptor antagonists on mortality and renal outcomes in diabetic nephropathy: systematic review. BMJ. 2004;329(7470):828.
+14. Wu HY, Huang JW, Lin HJ, et al. Comparative effectiveness of renin-angiotensin system blockers and other antihypertensive drugs in patients with diabetes: systematic review and bayesian network meta-analysis. BMJ. 2013;347:f6008.
+15. American Diabetes Association. Standards of Medical Care in Diabetes-2023. Diabetes Care. 2023;46(Suppl 1):S1-291.
+16. Kidney Disease: Improving Global Outcomes (KDIGO) CKD Work Group. KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int. 2024;105(4S):S117-314.
+17. Ravid M, Brosh D, Levi Z, et al. Use of enalapril to attenuate decline in renal function in normotensive, normoalbuminuric patients with type 2 diabetes mellitus. Ann Intern Med. 1998;128(12 Pt 1):982-8.
+18. Sawicki PT, Didjurgeit U, Mühlhauser I, et al. Smoking is associated with progression of diabetic nephropathy. Diabetes Care. 1994;17(2):126-31.
+19. Yoon HJ, Park J, Cho KH, et al. The association between smoking tobacco after a diagnosis of diabetes and the prevalence of diabetic nephropathy in the Korean male population. J Prev Med Public Health. 2016;49(2):108-17.
+20. Chen HY, Kuo S, Su PF, et al. Age at onset of type 1 diabetes between puberty and 30 years old is associated with increased risk of diabetic nephropathy. Front Endocrinol (Lausanne). 2024;15:1335839.
+21. Kashima S, Inoue K, Matsumoto M, Akimoto K. Low serum creatinine is a type 2 diabetes risk factor in men and women: the Yuport Health Checkup Center cohort study. Diabetes Metab J. 2017;41(5):354-64.
+22. Bakris GL, Weir MR. Angiotensin-converting enzyme inhibitor-associated elevations in serum creatinine: is this a cause for concern? Arch Intern Med. 2000;160(5):685-93.
+23.Poulsen PL, Ebbehøj E, Hansen KW, Mogensen CE. Effects of smoking on 24-h ambulatory blood pressure and autonomic function in normoalbuminuric insulin-dependent diabetes mellitus patients. Am J Hypertens. 1998 Sept 1;11(9):1093–9.
+24. Kashima S, Inoue K, Matsumoto M. Low creatinine levels in diabetes mellitus among older individuals: the Yuport Medical Checkup Center Study. Sci Rep. 2021 July 26;11(1):15167. 
+
